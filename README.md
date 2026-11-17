@@ -2,24 +2,89 @@
 
 Proyecto de equipo de la asignatura de Gestión de Proyectos (GPR). Gestión en Jira (proyecto **GPR**), metodología Scrum.
 
+Une los contratos menores que publican la UPV y la Universitat de València (2019–2023) y produce:
+
+- **Alertas de posible fraccionamiento** (HU8).
+- **Proveedores comunes** y **oportunidades de compra conjunta** (HU6, HU11).
+- **Clasificación del objeto** del contrato en una taxonomía común (HU4).
+- Todo ello con los proveedores que son personas físicas **seudonimizados** (HU7).
+
 ## Equipo
 
 | Rol | Nombre |
 |---|---|
 | Miembro | Mateo Alís |
 | Miembro | Pablo Huguet |
-| Miembro | Jiale |
+| Miembro | Jiale Mao |
 | Miembro | Manuel Caballero |
-| Miembro | Vicente |
+| Miembro | Vicente Llácer |
+
+## Instalación (GPR-114)
+
+Requiere Python 3.10 o superior.
+
+```bash
+git clone https://github.com/Mateo-Alis/observatorio-contratos-menores-upv-uv
+cd observatorio-contratos-menores-upv-uv
+python -m venv .venv && source .venv/bin/activate      # en Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+**Datos de entrada:**
+- `data/*_UPV.csv` y `data/*_UV.xls(x)`: ficheros publicados por cada universidad, uno por año.
+- `UP_UV_Final.csv`: dataset unificado del equipo. Está comprimido en la rama `DATASET_FINAL` (`data/DATASET_FINAL.zip`). Para sacarlo:
+
+  ```bash
+  git show origin/DATASET_FINAL:data/DATASET_FINAL.zip > DATASET_FINAL.zip && unzip DATASET_FINAL.zip
+  ```
+
+## Ejecución
+
+Todos los módulos se lanzan con `PYTHONPATH=src python -m observatorio.<módulo>` y escriben en `outputs/`, que no se sube al repositorio.
+
+```bash
+export PYTHONPATH=src
+DATASET=DATASET_FINAL/UP_UV_Final.csv
+
+# HU3 · Agregar las líneas de la UPV por expediente
+python -m observatorio.expedientes --datos data --salida outputs
+
+# HU7 · Seudonimizar personas físicas (la sal se crea una vez, fuera del repositorio)
+python -m observatorio.seudonimizacion --generar-sal
+python -m observatorio.seudonimizacion --entrada $DATASET --uv-crudos data --salida outputs
+
+# HU6 · Proveedores comunes, candidatos y ranking de compra conjunta
+python -m observatorio.proveedores_comunes --entrada $DATASET --salida outputs
+
+# HU4 · Muestra para etiquetar y evaluación del clasificador (ver docs/validacion/README.md)
+python -m observatorio.evaluacion_clasificacion evaluar \
+    --etiquetado docs/validacion/GPR-52_etiquetado_muestra100.csv \
+    --prediccion docs/validacion/GPR-52_etiquetado_muestra100_prediccion.csv
+```
+
+**Tests:**
+
+```bash
+python -m pytest
+```
 
 ## Estructura del repositorio
 
 ```
-/data        Datos de entrada (no se suben los ficheros pesados)
-/notebooks   Exploración y EDA
-/src         Código de ingesta, clasificación y detección de anomalías
-/docs        Documentación del proyecto
-README.md
+data/               Ficheros publicados por la UPV y la UV (ver docs/datos_personales.md)
+docs/               Documentos del proyecto, pipeline, datos personales y validaciones manuales
+  pipeline.md       Descripción del pipeline paso a paso (GPR-115)
+  datos_personales.md
+  validacion/       Muestras para revisar a mano (GPR-52, GPR-58)
+notebooks/          Exploración y EDA
+src/observatorio/   Código del pipeline
+  carga.py                    Lectura de ficheros
+  expedientes.py              HU3 · agregación por expediente
+  seudonimizacion.py          HU7 · seudonimización
+  proveedores_comunes.py      HU6 · proveedores comunes y compra conjunta
+  evaluacion_clasificacion.py HU4 · etiquetado y evaluación
+tests/              Tests (pytest) con casos reales de los ficheros publicados
+outputs/            Resultados (no se sube)
 ```
 
 ## Flujo de trabajo
