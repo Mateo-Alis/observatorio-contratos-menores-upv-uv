@@ -39,12 +39,12 @@ def test_tipo_por_nif(nif, esperado):
 @pytest.mark.parametrize(
     "nombre",
     [
-        "MARTINEZ GALLEGO ANTONIO",
-        "VICÓ CRESPO, AGUSTÍ",
-        "PEREZ-GALDOS ENRIQUEZ DE SALAMANCA, NATALIA",
-        "FERNANDO SAEZ OLIVARES (VANGUARDIAS SONORAS PRODUCCIONES)",
-        "GRAU EXPOSITO, FAUSTINO",
-        "Mª PAZ CABALLERO LÓPEZ",
+        "PEREZ SOLER ANTONIO",
+        "FERRER BOSCH, AGUSTÍ",
+        "GARCIA-OLMOS RUIZ DE ARANDA, NATALIA",
+        "FERNANDO LOPEZ MARIN (SONIDO NORTE PRODUCCIONES)",
+        "ROCA VIDAL, FAUSTINO",
+        "Mª PAZ MORENO GIL",
     ],
 )
 def test_detecta_personas(nombre):
@@ -72,8 +72,8 @@ def test_no_marca_organizaciones(nombre):
 
 
 def test_nif_manda_sobre_el_nombre():
-    assert es_persona_fisica("FARMACIA PATRICIA ALBERT GUARDIOLA", nif="194****8J")
-    assert not es_persona_fisica("JUAN RUEDA SEVILLA", nif="B96102355")
+    assert es_persona_fisica("FARMACIA PATRICIA NAVARRO SANZ", nif="194****8J")
+    assert not es_persona_fisica("JUAN MOLINA SERRA", nif="B96102355")
 
 
 def test_tipo_proveedor_no_empresa_no_es_persona():
@@ -81,19 +81,19 @@ def test_tipo_proveedor_no_empresa_no_es_persona():
 
 
 def test_personas_conocidas():
-    # "THAIS CAPELLA SOLANO" no tiene un nombre de pila de la lista: la heurística no lo
+    # "XENIA CAPDEVILA ROS" no tiene un nombre de pila de la lista: la heurística no lo
     # reconoce, pero si la UV lo publica con NIF de persona física, se seudonimiza igual.
-    assert not parece_persona("THAIS CAPELLA SOLANO")
-    conocidas = frozenset({"THAIS CAPELLA SOLANO"})
-    assert es_persona_fisica("Thais Capella Solano", personas_conocidas=conocidas)
+    assert not parece_persona("XENIA CAPDEVILA ROS")
+    conocidas = frozenset({"XENIA CAPDEVILA ROS"})
+    assert es_persona_fisica("Xenia Capdevila Ros", personas_conocidas=conocidas)
 
 
 def test_seudonimo_estable_y_sin_nombre():
-    a = seudonimo("MARTINEZ GALLEGO ANTONIO", SAL)
-    assert a == seudonimo("Martínez  Gallego, Antonio".replace(",", ""), SAL)
+    a = seudonimo("PEREZ SOLER ANTONIO", SAL)
+    assert a == seudonimo("Pérez  Soler, Antonio".replace(",", ""), SAL)
     assert a.startswith("PER-") and len(a) == 12
-    assert "MARTINEZ" not in a
-    assert a != seudonimo("MARTINEZ GALLEGO ANTONIO", b"otra-sal")
+    assert "PEREZ" not in a
+    assert a != seudonimo("PEREZ SOLER ANTONIO", b"otra-sal")
 
 
 def test_sal_vacia_no_vale():
@@ -118,8 +118,8 @@ def test_obtener_sal(tmp_path, monkeypatch):
 def test_seudonimizar_dataframe_conserva_agrupacion():
     df = pd.DataFrame(
         {
-            "Proveedor": ["MARTINEZ GALLEGO ANTONIO", "MARTINEZ GALLEGO, ANTONIO", "FISHER SCIENTIFIC"],
-            "PROVEEDOR_CLAVE": ["MARTINEZ GALLEGO ANTONIO"] * 2 + ["FISHER SCIENTIFIC"],
+            "Proveedor": ["PEREZ SOLER ANTONIO", "PEREZ SOLER, ANTONIO", "FISHER SCIENTIFIC"],
+            "PROVEEDOR_CLAVE": ["PEREZ SOLER ANTONIO"] * 2 + ["FISHER SCIENTIFIC"],
             "TIPO_PROVEEDOR": ["Empresa / persona física / otro"] * 3,
             "Importe_num": [10.0, 20.0, 30.0],
         }
@@ -127,7 +127,7 @@ def test_seudonimizar_dataframe_conserva_agrupacion():
     out = seudonimizar(df, ["Proveedor", "PROVEEDOR_CLAVE"], SAL, col_tipo="TIPO_PROVEEDOR")
     assert out["ES_PERSONA_FISICA"].tolist() == [True, True, False]
     assert out.loc[2, "Proveedor"] == "FISHER SCIENTIFIC"
-    assert not out["Proveedor"].str.contains("MARTINEZ").any()
+    assert not out["Proveedor"].str.contains("PEREZ").any()
     # La clave unificada sigue agrupando a la misma persona en un único código
     assert out.loc[0, "PROVEEDOR_CLAVE"] == out.loc[1, "PROVEEDOR_CLAVE"]
     assert out.groupby("PROVEEDOR_CLAVE")["Importe_num"].sum().max() == 30.0
@@ -137,11 +137,11 @@ def test_seudonimizar_dataframe_conserva_agrupacion():
     "texto, esperado",
     [
         (
-            "Compra de billetes de tren para D. Javier Cubero, ponente en el workshop",
+            "Compra de billetes de tren para D. Javier Ortiz, ponente en el workshop",
             "Compra de billetes de tren para D. [PERSONA] , ponente en el workshop",
         ),
-        ("HOTEL DEL 24 AL 27/10/2021 PARA D. ADOLFO CORDERO", "HOTEL DEL 24 AL 27/10/2021 PARA D. [PERSONA]"),
-        ("Billete de avión de la tesis doctoral de Dª Andrea Sixto Costoya", "Billete de avión de la tesis doctoral de Dª [PERSONA]"),
+        ("HOTEL DEL 24 AL 27/10/2021 PARA D. ADOLFO RUBIO", "HOTEL DEL 24 AL 27/10/2021 PARA D. [PERSONA]"),
+        ("Billete de avión de la tesis doctoral de Dª Andrea Vidal Puig", "Billete de avión de la tesis doctoral de Dª [PERSONA]"),
         ("Compra de PROTEAN Short Plates", "Compra de PROTEAN Short Plates"),
     ],
 )

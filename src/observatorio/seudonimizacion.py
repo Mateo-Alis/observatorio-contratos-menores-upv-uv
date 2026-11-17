@@ -126,7 +126,7 @@ def parece_persona(nombre) -> bool:
     """Heurística por nombre, para cuando no hay NIF.
 
     El texto entre paréntesis se descarta: suele ser el nombre comercial de un autónomo
-    ("FERNANDO SAEZ OLIVARES (VANGUARDIAS SONORAS)").
+    ("FERNANDO LOPEZ MARIN (SONIDO NORTE)").
     """
     original = "" if nombre is None else str(nombre)
     sin_parentesis = re.sub(r"\(.*?\)", " ", original)
@@ -199,7 +199,7 @@ def seudonimo(nombre, sal: bytes) -> str:
     return PREFIJO + digest[:8].upper()
 
 
-# Tratamiento + nombre en textos libres ("billetes para D. Javier Cubero", "tesis de Dª Andrea …").
+# Tratamiento + nombre en textos libres ("billetes para D. Javier Ortiz", "tesis de Dª Andrea …").
 RE_PERSONA_EN_TEXTO = re.compile(
     r"\b(D\.|Dª|Dña\.?|DÑA\.?|DON|DOÑA|Don|Doña|SR\.|SRA\.|Sr\.|Sra\.)\s+"
     r"((?:[A-ZÁÉÍÓÚÑÇ][\wÁÉÍÓÚÑÇáéíóúñçàèòï'·-]*\.?\s*){1,4})"

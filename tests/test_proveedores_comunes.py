@@ -28,8 +28,8 @@ def df():
         ("UPV", "SOLO UPV SL", "SOLO UPV", EMP, "Informática", 500000),
         ("UV", "UNIVERSITAT DE VALENCIA", "UNIVERSITAT DE VALENCIA", "Universidad", "Otros", 9000),
         ("UPV", "UNIVERSITAT DE VALENCIA", "UNIVERSITAT DE VALENCIA", "Universidad", "Otros", 9000),
-        ("UPV", "MARTINEZ GALLEGO ANTONIO", "MARTINEZ GALLEGO ANTONIO", EMP, "Informática", 10),
-        ("UV", "MARTINEZ GALLEGO, ANTONIO", "MARTINEZ GALLEGO ANTONIO", EMP, "Informática", 10),
+        ("UPV", "PEREZ SOLER ANTONIO", "PEREZ SOLER ANTONIO", EMP, "Informática", 10),
+        ("UV", "PEREZ SOLER, ANTONIO", "PEREZ SOLER ANTONIO", EMP, "Informática", 10),
     ]
     return pd.DataFrame(
         filas, columns=["UNIVERSIDAD", "Proveedor", "PROVEEDOR_CLAVE", "TIPO_PROVEEDOR", "GRUPO_GASTO", "Importe_num"]
@@ -71,7 +71,7 @@ def test_ranking_categorias(df):
 
 def test_muestra_validacion_sin_personas(df):
     m = muestra_validacion(filtrar_comerciales(df), n=50)
-    assert "MARTINEZ GALLEGO ANTONIO" not in set(m["CLAVE_UNIFICADA"])
+    assert "PEREZ SOLER ANTONIO" not in set(m["CLAVE_UNIFICADA"])
     assert set(m["CLAVE_UNIFICADA"]) == {"MERCK LIFE SCIENCE", "SCHARLAB", "K TUIN"}
     assert (m["CORRECTO_SN"] == "").all()
 

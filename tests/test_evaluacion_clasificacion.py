@@ -74,7 +74,7 @@ def test_muestra_oculta_la_prediccion():
             "UNIVERSIDAD": ["UV"] * 6 + ["UPV"],
             "Objeto_UV": [
                 "Compra de reactivos",
-                "Billetes de tren para D. Javier Cubero",
+                "Billetes de tren para D. Javier Ortiz",
                 "Material diverso",
                 "Ordenador portátil",
                 "Servicio vario",
