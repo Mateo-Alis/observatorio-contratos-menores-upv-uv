@@ -132,7 +132,7 @@ def muestra_validacion(
     base = base[~base["ES_PERSONA_FISICA"].astype(bool)]
     nombres = base.groupby([clave, "UNIVERSIDAD"])["Proveedor"].agg(lambda s: s.value_counts().index[0]).unstack()
     gasto = base.groupby([clave, "UNIVERSIDAD"])["Importe_num"].sum().unstack(fill_value=0)
-    pares = nombres.dropna().join(gasto, rsuffix="_GASTO")
+    pares = nombres.dropna().join(gasto.add_suffix("_GASTO"))
     pares = pares[pares["UPV"].str.upper() != pares["UV"].str.upper()]
     m = pares.sample(n=min(n, len(pares)), random_state=semilla).reset_index()
     out = pd.DataFrame(

@@ -42,6 +42,24 @@ pip install -r requirements.txt
 
 Todos los módulos se lanzan con `PYTHONPATH=src python -m observatorio.<módulo>` y escriben en `outputs/`, que no se sube al repositorio.
 
+En **Windows (PowerShell)**, en lugar de `export` se usa:
+
+```powershell
+$env:PYTHONPATH = "src"; $env:OBSERVATORIO_SAL = "<la sal del equipo>"; $DATASET = "DATASET_FINAL/UP_UV_Final.csv"
+```
+
+**Tiempos aproximados** en un portátil:
+
+| Paso | Tiempo |
+|---|---|
+| Expedientes | 30 s |
+| Seudonimización | 20 s |
+| Proveedores comunes | 10 s |
+| Alertas | 2 s |
+| Excel de Power BI | 40 s |
+
+La evaluación del clasificador da error hasta que la muestra de GPR-52 esté etiquetada.
+
 ```bash
 export PYTHONPATH=src
 DATASET=DATASET_FINAL/UP_UV_Final.csv
@@ -56,7 +74,10 @@ python -m observatorio.seudonimizacion --entrada $DATASET --uv-crudos data --sal
 # HU6 · Proveedores comunes, candidatos y ranking de compra conjunta
 python -m observatorio.proveedores_comunes --entrada $DATASET --salida outputs
 
-# HU4 · Muestra para etiquetar y evaluación del clasificador (ver docs/validacion/README.md)
+# HU4 · Clasificador por reglas (la v2 es una propuesta, ver docs/pipeline.md)
+python -m observatorio.clasificacion --entrada $DATASET --salida outputs --version 2
+
+# HU4 · Evaluación del clasificador (cuando GPR-52 esté etiquetado, ver docs/validacion/README.md)
 python -m observatorio.evaluacion_clasificacion evaluar \
     --etiquetado docs/validacion/GPR-52_etiquetado_muestra100.csv \
     --prediccion docs/validacion/GPR-52_etiquetado_muestra100_prediccion.csv
@@ -83,12 +104,15 @@ docs/               Documentos del proyecto, pipeline, datos personales y valida
   datos_personales.md
   validacion/       Muestras para revisar a mano (GPR-52, GPR-58)
   powerbi/          Guía de montaje del dashboard y tema de colores (HU10)
+  manual_dashboard.md  Manual de uso del dashboard (GPR-115)
+  pruebas/          Protocolos de prueba con personas ajenas (GPR-111, GPR-116)
 notebooks/          Exploración y EDA
 src/observatorio/   Código del pipeline
   carga.py                    Lectura de ficheros
   expedientes.py              HU3 · agregación por expediente
   seudonimizacion.py          HU7 · seudonimización
   proveedores_comunes.py      HU6 · proveedores comunes y compra conjunta
+  clasificacion.py            HU4 · clasificador por reglas (v1 y v2)
   evaluacion_clasificacion.py HU4 · etiquetado y evaluación
   alertas.py                  HU8 · alertas de fraccionamiento
   powerbi.py                  HU10 · datos para el dashboard de Power BI
