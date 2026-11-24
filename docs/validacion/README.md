@@ -53,3 +53,5 @@ Fichero: `GPR-52_etiquetado_muestra100.csv`. Son 100 objetos de contrato de la U
 - `kappa_fleiss` mide el acuerdo entre vosotros. Por encima de 0,6 la taxonomía se entiende igual entre anotadores.
 - `exactitud` compara el clasificador con la etiqueta mayoritaria.
 - `cobertura` es la parte de objetos que el clasificador no deja "sin detalle".
+
+**Comparar con la versión 2 del clasificador (GPR-53):** `GPR-52_etiquetado_muestra100_prediccion_v2.csv` tiene la predicción de las reglas nuevas para los mismos 100 objetos, que deja 34 sin detalle en lugar de 50. Lanza el mismo comando con `--prediccion` apuntando a ese fichero. Si la exactitud de la v2 no es menor que la de la v1, se puede adoptar (ver `docs/pipeline.md`, paso 5). Tampoco abras este fichero antes de etiquetar.

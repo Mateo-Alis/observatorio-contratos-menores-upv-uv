@@ -54,10 +54,14 @@ Detalle completo en [`datos_personales.md`](datos_personales.md).
 - Los nombres que aparecen tras "D.", "Dª", "Sr." en el texto del objeto se sustituyen por `[PERSONA]`.
 - **Resultado:** 68.307 filas y 6.730 proveedores tratados como persona física.
 
-## 5. Clasificación del objeto (HU4)
+## 5. Clasificación del objeto · `observatorio.clasificacion` (HU4)
 
-- El clasificador por reglas está en el notebook y asigna `GRUPO_GASTO`.
+- El clasificador por reglas del notebook está ahora en el módulo y asigna `GRUPO_GASTO`. Coincide con el dataset en el 100 % de las filas.
+  - **UPV:** se clasifica por el concepto económico.
+  - **UV:** se clasifica por el texto del objeto; los contratos de tipo obras van directamente a obras.
+  - Gana la primera regla que encaja, así que el orden importa.
 - En la UV, el **35,3 %** de los pagos (37,7 % del gasto) queda como "Suministros/servicios (sin detalle)". Este es el margen de mejora de la HU4.
+- **Versión 2 (propuesta):** `--version 2` añade reglas solo para lo que la v1 deja sin categoría: reactivos, anticuerpos, discos SSD, mascarillas, patentes, pósteres… Así la parte sin detalle de la UV baja del 35,3 % al **23,7 %**, y la cobertura de la UV sube del 64,7 % al 76,3 % de los pagos. En una revisión rápida de 50 casos reclasificados acertaban unos 46. **No cambia el dataset ni las cifras del dashboard:** se adopta solo si la evaluación con el etiquetado de GPR-52 lo confirma.
 - `observatorio.evaluacion_clasificacion` genera una muestra ciega de 100 objetos para que la etiquete cada miembro del equipo. Después calcula el acuerdo entre anotadores (kappa de Cohen y de Fleiss), la exactitud, la cobertura y la matriz de confusión. Instrucciones en [`validacion/README.md`](validacion/README.md).
 
 ## 6. Proveedores comunes y compra conjunta · `observatorio.proveedores_comunes` (HU6)
@@ -88,6 +92,6 @@ Solo cuentan empresas y personas físicas: universidades, entidades públicas y 
 | `upv_expedientes.csv`, `upv_lineas_con_expediente.csv`, `upv_expedientes_resumen.json` | 3 |
 | `UP_UV_Final_seudonimizado.csv` | 4 |
 | `proveedores_comunes.csv`, `candidatos_compra_conjunta.csv`, `ranking_categorias_compra_conjunta.csv`, `proveedores_comunes_resumen.json` | 6 |
-| `evaluacion_clasificador.json`, `matriz_confusion_clasificador.csv` | 5 |
+| `evaluacion_clasificador.json`, `matriz_confusion_clasificador.csv`, `clasificacion_v1_resumen.json`, `clasificacion_v2_resumen.json` | 5 |
 | `alertas_fraccionamiento.csv`, `alertas_resumen.json` | 7 |
 | `observatorio_powerbi.xlsx`, `observatorio_powerbi_control.json` | 8 |
