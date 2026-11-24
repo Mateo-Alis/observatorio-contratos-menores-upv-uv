@@ -77,8 +77,8 @@ Solo cuentan empresas y personas físicas: universidades, entidades públicas y 
 
 ## 7–8. Alertas, dashboard e informe
 
-- **Alertas (HU8):** mismo proveedor, unidad, tipo y año. Se generan varios pagos por debajo del umbral cuya suma lo supera. En el PMV salieron 2.712 alertas, 559 de ellas de prioridad alta. La agregación por expediente (paso 3) permite contar expedientes en lugar de líneas.
-- **Dashboard (HU10):** HTML con filtros por universidad, prioridad, año y patrón, sobre datos seudonimizados.
+- **Alertas (HU8) · `observatorio.alertas`:** mismo proveedor, unidad, tipo y año, con al menos 2 pagos, todos por debajo del umbral (15.000 €; 40.000 € en obras) y que juntos lo superan. Salen **2.712 alertas** (UPV 1.370, UV 1.342) por 102,36 M€. Con la regla de prioridad v2, documentada en el módulo: **581 Alta**, 1.104 Media y 1.027 Baja.
+- **Dashboard (HU10) · `observatorio.powerbi`:** genera `observatorio_powerbi.xlsx`, con un modelo en estrella seudonimizado. El informe se monta en Power BI siguiendo [`powerbi/guia_powerbi.md`](powerbi/guia_powerbi.md).
 - **Informe de compra conjunta (HU11):** parte de las salidas del paso 6.
 
 ## Ficheros de salida (`outputs/`, no se suben)
@@ -89,3 +89,5 @@ Solo cuentan empresas y personas físicas: universidades, entidades públicas y 
 | `UP_UV_Final_seudonimizado.csv` | 4 |
 | `proveedores_comunes.csv`, `candidatos_compra_conjunta.csv`, `ranking_categorias_compra_conjunta.csv`, `proveedores_comunes_resumen.json` | 6 |
 | `evaluacion_clasificador.json`, `matriz_confusion_clasificador.csv` | 5 |
+| `alertas_fraccionamiento.csv`, `alertas_resumen.json` | 7 |
+| `observatorio_powerbi.xlsx`, `observatorio_powerbi_control.json` | 8 |

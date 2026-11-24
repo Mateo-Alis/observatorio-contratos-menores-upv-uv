@@ -60,6 +60,12 @@ python -m observatorio.proveedores_comunes --entrada $DATASET --salida outputs
 python -m observatorio.evaluacion_clasificacion evaluar \
     --etiquetado docs/validacion/GPR-52_etiquetado_muestra100.csv \
     --prediccion docs/validacion/GPR-52_etiquetado_muestra100_prediccion.csv
+
+# HU8 · Alertas de posible fraccionamiento
+python -m observatorio.alertas --entrada $DATASET --salida outputs
+
+# HU10 · Excel para el dashboard de Power BI (ver docs/powerbi/guia_powerbi.md)
+python -m observatorio.powerbi --entrada $DATASET --uv-crudos data --salida outputs
 ```
 
 **Tests:**
@@ -76,6 +82,7 @@ docs/               Documentos del proyecto, pipeline, datos personales y valida
   pipeline.md       Descripción del pipeline paso a paso (GPR-115)
   datos_personales.md
   validacion/       Muestras para revisar a mano (GPR-52, GPR-58)
+  powerbi/          Guía de montaje del dashboard y tema de colores (HU10)
 notebooks/          Exploración y EDA
 src/observatorio/   Código del pipeline
   carga.py                    Lectura de ficheros
@@ -83,6 +90,8 @@ src/observatorio/   Código del pipeline
   seudonimizacion.py          HU7 · seudonimización
   proveedores_comunes.py      HU6 · proveedores comunes y compra conjunta
   evaluacion_clasificacion.py HU4 · etiquetado y evaluación
+  alertas.py                  HU8 · alertas de fraccionamiento
+  powerbi.py                  HU10 · datos para el dashboard de Power BI
 tests/              Tests (pytest) con casos reales de los ficheros publicados
 outputs/            Resultados (no se sube)
 ```
